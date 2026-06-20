@@ -101,6 +101,28 @@
       padding: 10px 0;
     }
 
+    .scroll-progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .scroll-progress span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), var(--yellow-2));
+      box-shadow: 0 0 18px rgba(245,197,24,.55);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform .08s linear;
+    }
+
     .header__inner {
       display: flex;
       align-items: center;
@@ -1369,6 +1391,107 @@
       font-size: .8rem;
     }
 
+
+    .hero__content,
+    .stage-copy,
+    .section,
+    .section-head,
+    .section-head--left,
+    .about-copy,
+    .feature-card,
+    .audience-card,
+    .quote-box,
+    .event-copy,
+    .event-card,
+    .cta-panel,
+    .mini-card,
+    .footer,
+    .footer__brand,
+    .footer__grid > div {
+      text-align: center;
+    }
+
+    .section-head--left {
+      margin: 0 auto 38px;
+    }
+
+    .hero__text,
+    .hero__subtitle,
+    .section-copy,
+    .about-copy p,
+    .stage-copy p,
+    .showcase-quote p,
+    .feature-card p,
+    .audience-card__top,
+    .audience-card p,
+    .quote-box p,
+    .event-copy p,
+    .event-card h3,
+    .cta-panel p,
+    .mini-card p,
+    .footer__brand p {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero__actions,
+    .hero__stats,
+    .about-stats,
+    .event-meta,
+    .event-card__badges,
+    .footer__social {
+      justify-content: center;
+    }
+
+    .feature-card__icon {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .feature-card__tag {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .audience-card {
+      align-items: center;
+    }
+
+    .audience-card__top {
+      max-width: 100%;
+    }
+
+    .audience-list {
+      justify-items: center;
+      text-align: center;
+    }
+
+    .audience-list li {
+      padding-left: 0;
+      max-width: 520px;
+    }
+
+    .audience-list li::before {
+      position: static;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .event-list {
+      justify-items: center;
+    }
+
+    .event-list li {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+      max-width: 460px;
+    }
+
+    .footer ul {
+      justify-items: center;
+    }
+
     .reveal {
       opacity: 0;
       transform: translateY(28px);
@@ -1557,6 +1680,7 @@
         <span></span>
       </button>
     </div>
+    <div class="scroll-progress" aria-hidden="true"><span id="scrollProgressBar"></span></div>
   </header>
 
   <main id="top">
@@ -2055,14 +2179,28 @@
     const nav = document.getElementById("nav");
     const heroNotes = document.getElementById("heroNotes");
     const heroSpotlight = document.getElementById("heroSpotlight");
+    const scrollProgressBar = document.getElementById("scrollProgressBar");
 
-    window.addEventListener("scroll", () => {
+    function updateScrollProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? Math.min(scrollTop / scrollHeight, 1) : 0;
+      scrollProgressBar.style.transform = `scaleX(${progress})`;
+    }
+
+    function handlePageScroll() {
       if (window.scrollY > 40) {
         header.classList.add("is-scrolled");
       } else {
         header.classList.remove("is-scrolled");
       }
-    });
+
+      updateScrollProgress();
+    }
+
+    window.addEventListener("scroll", handlePageScroll);
+    window.addEventListener("resize", updateScrollProgress);
+    handlePageScroll();
 
     burger.addEventListener("click", () => {
       burger.classList.toggle("is-open");
